@@ -1,5 +1,6 @@
 # part 1
 password_range = (246540..787419)
+# password_range = (777998..778000)
 
 def get_digits (value)
   [
@@ -32,15 +33,22 @@ puts valid_password_count
 
 # part 2
 def double_digits_only_check(password)
-  unless password.match(/(\d)\1/).nil?
-    return true if password.match(/(\d)\1\1/).nil?
+  # this totally works
+  double_digit_only_found = false
+  (0..9).each do |x|
+    matches = password.match(/(#{x})+/)
+    if !matches.nil? && matches[0].size == 2
+      double_digit_only_found = true
+    end
+    break if double_digit_only_found
   end
-  return false
+
+  double_digit_only_found
 end
 
 valid_password_count = 0
 password_range.each do |password|
-  if double_digits_only_check(password.to_s) && decreasing_digits_check(get_digits(password))
+  if decreasing_digits_check(get_digits(password)) && double_digits_only_check(password.to_s)
     valid_password_count += 1
   end
 end

@@ -1,4 +1,13 @@
 # part 1
+def set_instructions
+  @instructions = []
+  File.open("5.txt").each do |line|
+    line.split(",").each do |reg|
+      @instructions.push reg.to_i
+    end
+  end
+end
+
 def get_value(mode, param)
   if mode == 0
     @instructions[param]
@@ -10,6 +19,7 @@ def get_value(mode, param)
 end
 
 def run_test
+  set_instructions
   input = 1
   i = 0
   while i < @instructions.length
@@ -45,6 +55,7 @@ end
 
 # part 2, baby!
 def run_test_2
+  set_instructions
   input = 5
   i = 0
   while i < @instructions.length
@@ -116,19 +127,5 @@ def run_test_2
   end
 end
 
-@instructions = []
-File.open("5.txt").each do |line|
-  line.split(",").each do |reg|
-    @instructions.push reg.to_i
-  end
-end
-
 run_test
-
-@instructions = []
-File.open("5.txt").each do |line|
-  line.split(",").each do |reg|
-    @instructions.push reg.to_i
-  end
-end
 run_test_2

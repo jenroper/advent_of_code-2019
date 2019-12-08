@@ -124,4 +124,11 @@ File.open("5.txt").each do |line|
 end
 
 run_test
+
+@instructions = []
+File.open("5.txt").each do |line|
+  line.split(",").each do |reg|
+    @instructions.push reg.to_i
+  end
+end
 run_test_2

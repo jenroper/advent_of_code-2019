@@ -16,7 +16,7 @@ def get_value(instructions, mode, param)
   if mode == 0
     instructions[param]
   elsif mode > 1
-    puts "fuck me I got an invalid mode #{mode}"
+    puts "I got an invalid mode #{mode}"
   else
     param
   end

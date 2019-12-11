@@ -66,7 +66,6 @@ puts calc_checksum(layers)
 
 # part 2
 def render_image(layers)
-  puts "#{layers}"
   image = []
   (0..(HEIGHT-1)).each do |row_index|
     row = []

@@ -11,9 +11,22 @@ def set_instructions
   instructions
 end
 
+def get_address(mode, param)
+  if mode == 2
+    @relative_base + param
+  else
+    param
+  end
+end
+
 def get_value(instructions, mode, param)
   if mode == 0
     # position
+    if param >= instructions.length
+      while param >= instructions.length
+        instructions.push(0)
+      end
+    end
     instructions[param]
   elsif mode == 1
     # immediate
@@ -22,9 +35,7 @@ def get_value(instructions, mode, param)
     # relative
     if param + @relative_base < 0
       puts "ERROR: Cannot access negative memory addresses"
-      puts "#{instructions}"
     elsif  param + @relative_base >= instructions.length
-      puts "increasing instructions length"
       i = instructions.length - 1
       while param + @relative_base >= instructions.length
         instructions.push(0)
@@ -52,24 +63,19 @@ def intcode(instructions, inputs)
       x = get_value(instructions, (instruction % 1000) / 100, instructions[i+1])
       y = get_value(instructions, (instruction % 10000) / 1000, instructions[i+2])
       if opcode == 1
-        puts "I guess we're adding"
-        instructions[instructions[i+3]] = x + y
+        instructions[get_address((instruction % 100000) / 10000, instructions[i+3])] = x + y
       else
-        instructions[instructions[i+3]] = x * y
+        instructions[get_address((instruction % 100000) / 10000, instructions[i+3])] = x * y
       end
       i += 4 if instructions[i] == instruction
     when 3
       # input
-      instructions[instructions[i+1]] = inputs[input_pointer]
+      instructions[get_address((instruction % 100000) / 10000, instructions[i+3])] = inputs[input_pointer]
       input_pointer += 1
       i += 2 if instructions[i] == instruction
     when 4
       # output
-      if instruction == 204 && (instructions[i+1] + @relative_base) == 0
-        puts "#{instructions}"
-      else
-        puts get_value(instructions, (instruction % 1000) / 100, instructions[i+1])
-      end
+      puts get_value(instructions, (instruction % 1000) / 100, instructions[i+1])
       i += 2
     when 5
       # jump-if-true
@@ -92,9 +98,9 @@ def intcode(instructions, inputs)
       x = get_value(instructions, (instruction % 1000) / 100, instructions[i+1])
       y = get_value(instructions, (instruction % 10000) / 1000, instructions[i+2])
       if x < y
-        instructions[instructions[i+3]] = 1
+        instructions[get_address((instruction % 100000) / 10000, instructions[i+3])] = 1
       else
-        instructions[instructions[i+3]] = 0
+        instructions[get_address((instruction % 100000) / 10000, instructions[i+3])] = 0
       end
       i += 4 if instructions[i] == instruction
     when 8
@@ -102,9 +108,9 @@ def intcode(instructions, inputs)
       x = get_value(instructions, (instruction % 1000) / 100, instructions[i+1])
       y = get_value(instructions, (instruction % 10000) / 1000, instructions[i+2])
       if x == y
-        instructions[instructions[i+3]] = 1
+        instructions[get_address((instruction % 100000) / 10000, instructions[i+3])] = 1
       else
-        instructions[instructions[i+3]] = 0
+        instructions[get_address((instruction % 100000) / 10000, instructions[i+3])] = 0
       end
       i += 4 if instructions[i] == instruction
     when 9
@@ -124,3 +130,4 @@ end
 
 instructions = set_instructions
 intcode(instructions, [1])
+intcode(instructions, [2])
